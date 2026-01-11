@@ -31,12 +31,14 @@ elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
         # Default to absolute path in current directory
         DB_PATH="$(pwd)/evolution.db"
         export DATABASE_URL="file:$DB_PATH"
+        export DATABASE_CONNECTION_URI="file:$DB_PATH"
         
         # Robustly append to .env
         echo "" >> .env
         echo "DATABASE_URL=file:$DB_PATH" >> .env
+        echo "DATABASE_CONNECTION_URI=file:$DB_PATH" >> .env
         
-        echo "Set DATABASE_URL to $DATABASE_URL"
+        echo "Set DATABASE_URL and DATABASE_CONNECTION_URI to $DATABASE_URL"
     fi
     
     echo "Deploying for sqlite at $DATABASE_URL"
