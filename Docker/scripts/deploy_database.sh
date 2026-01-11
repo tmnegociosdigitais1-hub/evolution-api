@@ -28,10 +28,18 @@ if [[ "$DATABASE_PROVIDER" == "postgresql" || "$DATABASE_PROVIDER" == "mysql" ||
     fi
 elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
     if [ -z "$DATABASE_URL" ]; then
-        export DATABASE_URL="file:$(pwd)/evolution.db"
-        echo "DATABASE_URL=\"file:$(pwd)/evolution.db\"" >> .env
+        # Default to absolute path in current directory
+        DB_PATH="$(pwd)/evolution.db"
+        export DATABASE_URL="file:$DB_PATH"
+        
+        # Robustly append to .env
+        echo "" >> .env
+        echo "DATABASE_URL=file:$DB_PATH" >> .env
+        
+        echo "Set DATABASE_URL to $DATABASE_URL"
     fi
-    echo "Deploying for sqlite"
+    
+    echo "Deploying for sqlite at $DATABASE_URL"
     npm run db:generate
     if [ $? -ne 0 ]; then
         echo "Prisma generate failed"
@@ -39,12 +47,15 @@ elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
     else
         echo "Prisma generate succeeded"
     fi
+    
     npx prisma db push --schema ./prisma/sqlite-schema.prisma
     if [ $? -ne 0 ]; then
         echo "Prisma db push failed"
         exit 1
     else
         echo "Prisma db push succeeded"
+        # Verify file creation
+        ls -la evolution.db || echo "evolution.db NOT FOUND"
         chmod 666 evolution.db
     fi
 else
