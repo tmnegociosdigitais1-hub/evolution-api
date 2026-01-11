@@ -29,6 +29,7 @@ if [[ "$DATABASE_PROVIDER" == "postgresql" || "$DATABASE_PROVIDER" == "mysql" ||
 elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
     if [ -z "$DATABASE_URL" ]; then
         export DATABASE_URL="file:$(pwd)/evolution.db"
+        echo "DATABASE_URL=\"file:$(pwd)/evolution.db\"" >> .env
     fi
     echo "Deploying for sqlite"
     npm run db:generate
@@ -44,6 +45,7 @@ elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
         exit 1
     else
         echo "Prisma db push succeeded"
+        chmod 666 evolution.db
     fi
 else
     echo "Error: Database provider $DATABASE_PROVIDER invalid."
