@@ -28,7 +28,7 @@ if [[ "$DATABASE_PROVIDER" == "postgresql" || "$DATABASE_PROVIDER" == "mysql" ||
     fi
 elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
     if [ -z "$DATABASE_URL" ]; then
-        export DATABASE_URL="file:./evolution.db"
+        export DATABASE_URL="file:$(pwd)/evolution.db"
     fi
     echo "Deploying for sqlite"
     npm run db:generate
