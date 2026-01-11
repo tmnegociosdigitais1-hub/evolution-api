@@ -26,6 +26,22 @@ if [[ "$DATABASE_PROVIDER" == "postgresql" || "$DATABASE_PROVIDER" == "mysql" ||
     else
         echo "Prisma generate succeeded"
     fi
+elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
+    echo "Deploying for sqlite"
+    npm run db:generate
+    if [ $? -ne 0 ]; then
+        echo "Prisma generate failed"
+        exit 1
+    else
+        echo "Prisma generate succeeded"
+    fi
+    npx prisma db push --schema ./prisma/sqlite-schema.prisma
+    if [ $? -ne 0 ]; then
+        echo "Prisma db push failed"
+        exit 1
+    else
+        echo "Prisma db push succeeded"
+    fi
 else
     echo "Error: Database provider $DATABASE_PROVIDER invalid."
     exit 1

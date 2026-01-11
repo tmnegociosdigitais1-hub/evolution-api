@@ -39,7 +39,8 @@ export async function saveKey(sessionId: string, keyJson: any): Promise<any> {
       where: { sessionId: sessionId },
       data: { creds: JSON.stringify(keyJson) },
     });
-  } catch {
+  } catch (error) {
+    console.error('Error in saveKey:', error);
     return null;
   }
 }
@@ -50,7 +51,8 @@ export async function getAuthKey(sessionId: string): Promise<any> {
     if (!register) return null;
     const auth = await prismaRepository.session.findUnique({ where: { sessionId: sessionId } });
     return JSON.parse(auth?.creds);
-  } catch {
+  } catch (error) {
+    console.error('Error in getAuthKey:', error);
     return null;
   }
 }
@@ -60,7 +62,8 @@ async function deleteAuthKey(sessionId: string): Promise<any> {
     const register = await keyExists(sessionId);
     if (!register) return;
     await prismaRepository.session.delete({ where: { sessionId: sessionId } });
-  } catch {
+  } catch (error) {
+    console.error('Error in deleteAuthKey:', error);
     return;
   }
 }
