@@ -27,6 +27,9 @@ if [[ "$DATABASE_PROVIDER" == "postgresql" || "$DATABASE_PROVIDER" == "mysql" ||
         echo "Prisma generate succeeded"
     fi
 elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
+    if [ -z "$DATABASE_URL" ]; then
+        export DATABASE_URL="file:./evolution.db"
+    fi
     echo "Deploying for sqlite"
     npm run db:generate
     if [ $? -ne 0 ]; then
