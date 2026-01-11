@@ -58,7 +58,18 @@ elif [[ "$DATABASE_PROVIDER" == "sqlite" ]]; then
         echo "Prisma db push succeeded"
         # Verify file creation
         ls -la evolution.db || echo "evolution.db NOT FOUND"
+        
+        # Overwrite conflicting env options from .env.example
+        export DATABASE_CONNECTION_URI="file:$DB_PATH"
+        
+        # Robustly append to .env
+        echo "" >> .env
+        echo "DATABASE_URL=file:$DB_PATH" >> .env
+        echo "DATABASE_CONNECTION_URI=file:$DB_PATH" >> .env
+        
+        echo "Setting permissions for evolution.db and directory..."
         chmod 666 evolution.db
+        chmod 777 .
     fi
 else
     echo "Error: Database provider $DATABASE_PROVIDER invalid."
