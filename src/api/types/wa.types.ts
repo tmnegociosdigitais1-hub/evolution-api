@@ -67,7 +67,7 @@ export namespace wa {
 
     export interface LocalEvent {
         enabled?: boolean;
-        events?: string[];
+        events?: any;
         instanceId?: string;
     }
 
@@ -75,14 +75,14 @@ export namespace wa {
         enabled?: boolean;
         url?: string;
         headers?: any;
-        events?: string[];
+        events?: any;
         webhookByEvents?: boolean;
         webhookBase64?: boolean;
     }
 
     export interface LocalPusher {
         enabled?: boolean;
-        events?: string[];
+        events?: any;
         appId?: string;
         key?: string;
         secret?: string;
