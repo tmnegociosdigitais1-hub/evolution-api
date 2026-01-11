@@ -75,12 +75,14 @@ export namespace wa {
         enabled?: boolean;
         url?: string;
         headers?: any;
+        events?: string[];
         webhookByEvents?: boolean;
         webhookBase64?: boolean;
     }
 
     export interface LocalPusher {
         enabled?: boolean;
+        events?: string[];
         appId?: string;
         key?: string;
         secret?: string;
