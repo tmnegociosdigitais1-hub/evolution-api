@@ -602,7 +602,7 @@ export class ChannelStartupService {
       id?: string;
       fromMe?: boolean;
       remoteJid?: string;
-      participants?: string;
+      participant?: string;
     };
 
     const timestampFilter = {};
@@ -626,7 +626,7 @@ export class ChannelStartupService {
           keyFilters?.id ? { key: { path: ['id'], equals: keyFilters?.id } } : {},
           keyFilters?.fromMe ? { key: { path: ['fromMe'], equals: keyFilters?.fromMe } } : {},
           keyFilters?.remoteJid ? { key: { path: ['remoteJid'], equals: keyFilters?.remoteJid } } : {},
-          keyFilters?.participants ? { key: { path: ['participants'], equals: keyFilters?.participants } } : {},
+          keyFilters?.participant ? { key: { path: ['participant'], equals: keyFilters?.participant } } : {},
         ],
       },
     });
@@ -650,7 +650,7 @@ export class ChannelStartupService {
           keyFilters?.id ? { key: { path: ['id'], equals: keyFilters?.id } } : {},
           keyFilters?.fromMe ? { key: { path: ['fromMe'], equals: keyFilters?.fromMe } } : {},
           keyFilters?.remoteJid ? { key: { path: ['remoteJid'], equals: keyFilters?.remoteJid } } : {},
-          keyFilters?.participants ? { key: { path: ['participants'], equals: keyFilters?.participants } } : {},
+          keyFilters?.participant ? { key: { path: ['participant'], equals: keyFilters?.participant } } : {},
         ],
       },
       orderBy: {
