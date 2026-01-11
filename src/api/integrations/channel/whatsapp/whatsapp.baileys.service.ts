@@ -80,7 +80,7 @@ import { BadRequestException, InternalServerErrorException, NotFoundException } 
 import ffmpegPath from '@ffmpeg-installer/ffmpeg';
 import { Boom } from '@hapi/boom';
 import { createId as cuid } from '@paralleldrive/cuid2';
-import { Instance, Message } from '@prisma/client';
+import { Instance as PrismaInstance, Message } from '@prisma/client';
 import { createJid } from '@utils/createJid';
 import { fetchLatestWaWebVersion } from '@utils/fetchLatestWaWebVersion';
 import { makeProxyAgent, makeProxyAgentUndici } from '@utils/makeProxyAgent';
@@ -774,7 +774,7 @@ export class BaileysStartupService extends ChannelStartupService {
 
       if (chatsToInsert.length > 0) {
         if (this.configService.get<Database>('DATABASE').SAVE_DATA.CHATS)
-          await this.prismaRepository.chat.createMany({ data: chatsToInsert, skipDuplicates: true });
+          await this.prismaRepository.chat.createMany({ data: chatsToInsert, skipDuplicates: true } as any);
       }
     },
 
@@ -823,7 +823,7 @@ export class BaileysStartupService extends ChannelStartupService {
           this.sendDataWebhook(Events.CONTACTS_UPSERT, contactsRaw);
 
           if (this.configService.get<Database>('DATABASE').SAVE_DATA.CONTACTS)
-            await this.prismaRepository.contact.createMany({ data: contactsRaw, skipDuplicates: true });
+            await this.prismaRepository.contact.createMany({ data: contactsRaw, skipDuplicates: true } as any);
 
           const usersContacts = contactsRaw.filter((c) => c.remoteJid.includes('@s.whatsapp'));
           if (usersContacts) {
@@ -996,7 +996,7 @@ export class BaileysStartupService extends ChannelStartupService {
         this.sendDataWebhook(Events.CHATS_SET, chatsRaw);
 
         if (this.configService.get<Database>('DATABASE').SAVE_DATA.HISTORIC) {
-          await this.prismaRepository.chat.createMany({ data: chatsRaw, skipDuplicates: true });
+          await this.prismaRepository.chat.createMany({ data: chatsRaw, skipDuplicates: true } as any);
         }
 
         const messagesRaw: any[] = [];
@@ -1056,7 +1056,7 @@ export class BaileysStartupService extends ChannelStartupService {
         });
 
         if (this.configService.get<Database>('DATABASE').SAVE_DATA.HISTORIC) {
-          await this.prismaRepository.message.createMany({ data: messagesRaw, skipDuplicates: true });
+          await this.prismaRepository.message.createMany({ data: messagesRaw, skipDuplicates: true } as any);
         }
 
         if (
@@ -2097,7 +2097,7 @@ export class BaileysStartupService extends ChannelStartupService {
         };
       } else {
         const instanceNames = instanceName ? [instanceName] : null;
-        const info: Instance = await waMonitor.instanceInfo(instanceNames);
+        const info: PrismaInstance = await waMonitor.instanceInfo(instanceNames);
         const business = await this.fetchBusinessProfile(jid);
 
         return {
@@ -3780,7 +3780,7 @@ export class BaileysStartupService extends ChannelStartupService {
         if (messageId) {
           const isLogicalDeleted = configService.get<Database>('DATABASE').DELETE_DATA.LOGICAL_MESSAGE_DELETE;
           let message = await this.prismaRepository.message.findFirst({
-            where: { key: { path: ['id'], equals: messageId } },
+            where: { key: { path: 'id', equals: messageId } },
           });
           if (isLogicalDeleted) {
             if (!message) return response;
@@ -3849,7 +3849,7 @@ export class BaileysStartupService extends ChannelStartupService {
         throw 'Message not found';
       }
 
-      for (const subtype of MessageSubtype) {
+      for (const subtype of Object.values(MessageSubtype)) {
         if (msg.message[subtype]) {
           msg.message = msg.message[subtype].message;
         }
@@ -3867,7 +3867,7 @@ export class BaileysStartupService extends ChannelStartupService {
         const template =
           msg.message.templateMessage.hydratedTemplate || msg.message.templateMessage.hydratedFourRowTemplate;
 
-        for (const type of TypeMediaMessage) {
+        for (const type of Object.values(TypeMediaMessage)) {
           if (template[type]) {
             mediaMessage = template[type];
             mediaType = type;
@@ -3880,7 +3880,7 @@ export class BaileysStartupService extends ChannelStartupService {
           throw 'Template message does not contain a supported media type';
         }
       } else {
-        for (const type of TypeMediaMessage) {
+        for (const type of Object.values(TypeMediaMessage)) {
           mediaMessage = msg.message[type];
           if (mediaMessage) {
             mediaType = type;
@@ -4200,7 +4200,7 @@ export class BaileysStartupService extends ChannelStartupService {
           const messageId = messageSent.message?.protocolMessage?.key?.id;
           if (messageId && this.configService.get<Database>('DATABASE').SAVE_DATA.NEW_MESSAGE) {
             let message = await this.prismaRepository.message.findFirst({
-              where: { key: { path: ['id'], equals: messageId } },
+              where: { key: { path: 'id', equals: messageId } },
             });
             if (!message) throw new NotFoundException('Message not found');
 
@@ -5038,13 +5038,13 @@ export class BaileysStartupService extends ChannelStartupService {
         messageType: query?.where?.messageType,
         ...timestampFilter,
         AND: [
-          keyFilters?.id ? { key: { path: ['id'], equals: keyFilters?.id } } : {},
-          keyFilters?.fromMe ? { key: { path: ['fromMe'], equals: keyFilters?.fromMe } } : {},
-          keyFilters?.participant ? { key: { path: ['participant'], equals: keyFilters?.participant } } : {},
+          keyFilters?.id ? { key: { path: 'id', equals: keyFilters?.id } } : {},
+          keyFilters?.fromMe ? { key: { path: 'fromMe', equals: keyFilters?.fromMe } } : {},
+          keyFilters?.participant ? { key: { path: 'participant', equals: keyFilters?.participant } } : {},
           {
             OR: [
-              keyFilters?.remoteJid ? { key: { path: ['remoteJid'], equals: keyFilters?.remoteJid } } : {},
-              keyFilters?.remoteJidAlt ? { key: { path: ['remoteJidAlt'], equals: keyFilters?.remoteJidAlt } } : {},
+              keyFilters?.remoteJid ? { key: { path: 'remoteJid', equals: keyFilters?.remoteJid } } : {},
+              keyFilters?.remoteJidAlt ? { key: { path: 'remoteJidAlt', equals: keyFilters?.remoteJidAlt } } : {},
             ],
           },
         ],
@@ -5067,13 +5067,13 @@ export class BaileysStartupService extends ChannelStartupService {
         messageType: query?.where?.messageType,
         ...timestampFilter,
         AND: [
-          keyFilters?.id ? { key: { path: ['id'], equals: keyFilters?.id } } : {},
-          keyFilters?.fromMe ? { key: { path: ['fromMe'], equals: keyFilters?.fromMe } } : {},
-          keyFilters?.participant ? { key: { path: ['participant'], equals: keyFilters?.participant } } : {},
+          keyFilters?.id ? { key: { path: 'id', equals: keyFilters?.id } } : {},
+          keyFilters?.fromMe ? { key: { path: 'fromMe', equals: keyFilters?.fromMe } } : {},
+          keyFilters?.participant ? { key: { path: 'participant', equals: keyFilters?.participant } } : {},
           {
             OR: [
-              keyFilters?.remoteJid ? { key: { path: ['remoteJid'], equals: keyFilters?.remoteJid } } : {},
-              keyFilters?.remoteJidAlt ? { key: { path: ['remoteJidAlt'], equals: keyFilters?.remoteJidAlt } } : {},
+              keyFilters?.remoteJid ? { key: { path: 'remoteJid', equals: keyFilters?.remoteJid } } : {},
+              keyFilters?.remoteJidAlt ? { key: { path: 'remoteJidAlt', equals: keyFilters?.remoteJidAlt } } : {},
             ],
           },
         ],
@@ -5121,6 +5121,6 @@ export class BaileysStartupService extends ChannelStartupService {
         currentPage: query.page,
         records: formattedMessages,
       },
-    };
+    } as any;
   }
 }

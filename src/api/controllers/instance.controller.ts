@@ -30,7 +30,7 @@ export class InstanceController {
     private readonly chatwootCache: CacheService,
     private readonly baileysCache: CacheService,
     private readonly providerFiles: ProviderFiles,
-  ) {}
+  ) { }
 
   private readonly logger = new Logger('InstanceController');
 
@@ -104,7 +104,7 @@ export class InstanceController {
       if (instanceData.proxyHost && instanceData.proxyPort && instanceData.proxyProtocol) {
         const testProxy = await this.proxyService.testProxy({
           host: instanceData.proxyHost,
-          port: instanceData.proxyPort,
+          port: instanceData.proxyPort?.toString(),
           protocol: instanceData.proxyProtocol,
           username: instanceData.proxyUsername,
           password: instanceData.proxyPassword,
@@ -115,7 +115,7 @@ export class InstanceController {
         await this.proxyService.createProxy(instanceDto, {
           enabled: true,
           host: instanceData.proxyHost,
-          port: instanceData.proxyPort,
+          port: instanceData.proxyPort?.toString(),
           protocol: instanceData.proxyProtocol,
           username: instanceData.proxyUsername,
           password: instanceData.proxyPassword,

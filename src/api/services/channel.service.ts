@@ -27,7 +27,7 @@ export class ChannelStartupService {
     public readonly eventEmitter: EventEmitter2,
     public readonly prismaRepository: PrismaRepository,
     public readonly chatwootCache: CacheService,
-  ) {}
+  ) { }
 
   public readonly logger = new Logger('ChannelStartupService');
 
@@ -623,10 +623,10 @@ export class ChannelStartupService {
         messageType: query?.where?.messageType,
         ...timestampFilter,
         AND: [
-          keyFilters?.id ? { key: { path: ['id'], equals: keyFilters?.id } } : {},
-          keyFilters?.fromMe ? { key: { path: ['fromMe'], equals: keyFilters?.fromMe } } : {},
-          keyFilters?.remoteJid ? { key: { path: ['remoteJid'], equals: keyFilters?.remoteJid } } : {},
-          keyFilters?.participants ? { key: { path: ['participants'], equals: keyFilters?.participants } } : {},
+          keyFilters?.id ? { key: { path: 'id', equals: keyFilters?.id } } : {},
+          keyFilters?.fromMe ? { key: { path: 'fromMe', equals: keyFilters?.fromMe } } : {},
+          keyFilters?.remoteJid ? { key: { path: 'remoteJid', equals: keyFilters?.remoteJid } } : {},
+          keyFilters?.participants ? { key: { path: 'participants', equals: keyFilters?.participants } } : {},
         ],
       },
     });
@@ -647,10 +647,10 @@ export class ChannelStartupService {
         messageType: query?.where?.messageType,
         ...timestampFilter,
         AND: [
-          keyFilters?.id ? { key: { path: ['id'], equals: keyFilters?.id } } : {},
-          keyFilters?.fromMe ? { key: { path: ['fromMe'], equals: keyFilters?.fromMe } } : {},
-          keyFilters?.remoteJid ? { key: { path: ['remoteJid'], equals: keyFilters?.remoteJid } } : {},
-          keyFilters?.participants ? { key: { path: ['participants'], equals: keyFilters?.participants } } : {},
+          keyFilters?.id ? { key: { path: 'id', equals: keyFilters?.id } } : {},
+          keyFilters?.fromMe ? { key: { path: 'fromMe', equals: keyFilters?.fromMe } } : {},
+          keyFilters?.remoteJid ? { key: { path: 'remoteJid', equals: keyFilters?.remoteJid } } : {},
+          keyFilters?.participants ? { key: { path: 'participants', equals: keyFilters?.participants } } : {},
         ],
       },
       orderBy: {
@@ -683,7 +683,7 @@ export class ChannelStartupService {
         currentPage: query.page,
         records: messages,
       },
-    };
+    } as any;
   }
 
   public async fetchStatusMessage(query: any) {
@@ -793,19 +793,19 @@ export class ChannelStartupService {
       const mappedResults = results.map((contact) => {
         const lastMessage = contact.lastMessageId
           ? {
-              id: contact.lastMessageId,
-              key: contact.lastMessage_key,
-              pushName: contact.lastMessagePushName,
-              participant: contact.lastMessageParticipant,
-              messageType: contact.lastMessageMessageType,
-              message: contact.lastMessageMessage,
-              contextInfo: contact.lastMessageContextInfo,
-              source: contact.lastMessageSource,
-              messageTimestamp: contact.lastMessageMessageTimestamp,
-              instanceId: contact.lastMessageInstanceId,
-              sessionId: contact.lastMessageSessionId,
-              status: contact.lastMessageStatus,
-            }
+            id: contact.lastMessageId,
+            key: contact.lastMessage_key,
+            pushName: contact.lastMessagePushName,
+            participant: contact.lastMessageParticipant,
+            messageType: contact.lastMessageMessageType,
+            message: contact.lastMessageMessage,
+            contextInfo: contact.lastMessageContextInfo,
+            source: contact.lastMessageSource,
+            messageTimestamp: contact.lastMessageMessageTimestamp,
+            instanceId: contact.lastMessageInstanceId,
+            sessionId: contact.lastMessageSessionId,
+            status: contact.lastMessageStatus,
+          }
           : undefined;
 
         return {
